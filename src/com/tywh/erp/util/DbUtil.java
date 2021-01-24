@@ -9,9 +9,9 @@ public class DbUtil {
         Connection conn = null;
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://*:1433;databasename=*";
+            String url = "jdbc:sqlserver://*:1433;databasename=perpfx01";
             String user = "sa";
-            String password = "tywh@2019";
+            String password = "*";
             conn = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
