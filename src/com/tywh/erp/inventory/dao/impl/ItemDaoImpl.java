@@ -20,14 +20,33 @@ public class ItemDaoImpl implements ItemDao {
         ResultSet rs = null;
         List<Item> itemList = new ArrayList<>();
         try {
-            StringBuilder sql = new StringBuilder();
-            sql.append("select shum,gjdj,tsfljc from FxsgkView where tsfljc not like '%联考%' and sxh not like '%W' ");
+            StringBuilder sql = new StringBuilder("select a.shum,a.gjdj,a.tsfljc,b.xscs from FxsgkView a left join ");
+            /*
+            select a.shum,a.gjdj,a.tsfljc,b.xscs from FxsgkView a
+left join (select shum,dj,tsfljc,sum(cs) as xscs from xsmxview where fhdbh in (select fhdbh from xsdview where fhzt in('待发','已发') and (khbh <> '2000000747') ) group by shum,dj,tsfljc) b
+on a.shum = b.shum and a.gjdj = b.dj and a.tsfljc = b.tsfljc
+where a.tsfljc not like '%联考%' and sxh not like '%W%' group by a.shum,gjdj, a.tsfljc,b.xscs order by b.xscs desc
+             */
+            sql.append("(select shum,dj,tsfljc,sum(cs) as xscs from xsmxview where fhdbh in ");
+            sql.append("(select fhdbh from xsdview where fhzt in(?, ?) and (khbh <> ?) ) group by shum,dj,tsfljc) b ");
+            sql.append("on a.shum = b.shum and a.gjdj = b.dj and a.tsfljc = b.tsfljc ");
+            sql.append("where a.tsfljc not like ? and a.sxh not like ? ");
             if (bmmc != "") {
-                sql.append("and bmmc like '%" + bmmc + "%'");
+                sql.append("and bmmc like ?");
             }
-            sql.append(" group by shum,gjdj, tsfljc");
+            sql.append(" group by a.shum,a.gjdj, a.tsfljc,b.xscs order by b.xscs desc ");
+//            String sql = "select a.shum,a.gjdj,a.tsfljc,b.xscs from FxsgkView a left join (select shum,dj,tsfljc,sum(cs) as xscs from xsmxview where fhdbh in (select fhdbh from xsdview where fhzt in('待发','已发') and (khbh <> '2000000747') ) group by shum,dj,tsfljc) b on a.shum = b.shum and a.gjdj = b.dj and a.tsfljc = b.tsfljc where a.tsfljc not like '%联考%' and a.sxh not like '%W%'  group by a.shum,a.gjdj, a.tsfljc,b.xscs order by b.xscs desc";
+            String sqlString = sql.toString();
             conn = DbUtil.getConnection();
-            ps = conn.prepareStatement(sql.toString());
+            ps = conn.prepareStatement(sqlString);
+            ps.setString(1,"待发");
+            ps.setString(2,"已发");
+            ps.setString(3,"2000000747");
+            ps.setString(4,"%联考%");
+            ps.setString(5,"%W%");
+            if (bmmc != "") {
+                ps.setString(6, "%" + bmmc + "%");
+            }
             rs = ps.executeQuery();
             while (rs.next()) {
                 Item item = new Item();

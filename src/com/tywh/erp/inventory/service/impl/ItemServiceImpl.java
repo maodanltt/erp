@@ -23,10 +23,12 @@ public class ItemServiceImpl implements ItemService {
             item.setQckc(qckc);
             item.setQmkc(qmkc);
             item.setXscs(xscs);
-            if ((qckc + qmkc) != 0) {
-                item.setSpzzl(xscs / (qckc + qmkc) );
-            } else {
+            if (xscs <= 0) {
                 item.setSpzzl(0);
+            } else if (xscs > 0 && ((qckc + qmkc) == 0)){
+                item.setSpzzl(1);
+            } else if (xscs > 0 && ((qckc + qmkc) > 0)) {
+                item.setSpzzl( (xscs * 2) / (qckc + qmkc));
             }
         }
         return itemList;
