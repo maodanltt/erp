@@ -15,10 +15,15 @@
     <title>库存动销率</title>
 </head>
 <body>
+<br>
 <form id="itemForm" action="/itemQuery" method="post">
-    部门名称：<input type="text" name="xsbmmc" id="xsbmmc"><br>
+    部门名称：<input type="text" name="xsbmmc" id="xsbmmc">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    图书分类简称：<input type="text" name="tsfljc" id="tsfljc">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    开始日期：<input type="date" name="startdate" id="startdate"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    结束日期：<input type="date" name="enddate" id="enddate">
     <input type="submit" value="查询">
 </form>
+<hr color="black">
 <table border="1" cellspacing="0" cellpadding="0" width="100%">
     <tr align="center">
         <td width="3%">序号</td>
@@ -28,7 +33,7 @@
         <td width="10%">期初库存</td>
         <td width="10%">期末库存</td>
         <td width="10%">销售册数</td>
-        <td width="10%">商品周转率</td>
+        <td width="10%">库存周转率</td>
     </tr>
     <%
         if (itemList != null) {
@@ -43,7 +48,7 @@
         <td width="10%"><%=item.getQckc()%></td>
         <td width="10%"><%=item.getQmkc()%></td>
         <td width="10%"><%=item.getXscs()%></td>
-        <td width="10%"><%=item.getSpzzl()%></td>
+        <td width="10%"><%=item.getKczzl()%></td>
     </tr>
     <%
             }

@@ -19,9 +19,9 @@ public class Item {
     //单品销售册数
     private Integer xscs;
     //商品周转率
-    private double spzzl;
+    private String kczzl;
     //动销率
-    private double kcdxl;
+    private String kcdxl;
 
     //书名、定价、图书分类简称组合，作为主键
     private String key;
@@ -77,19 +77,19 @@ public class Item {
         this.xscs = xscs;
     }
 
-    public double getKcdxl() {
+    public String getKcdxl() {
         return kcdxl;
     }
 
-    public void setKcdxl(double kcdxl) {
+    public void setKcdxl(String kcdxl) {
         this.kcdxl = kcdxl;
     }
 
-    public double getSpzzl() {
-        return spzzl;
+    public String getKczzl() {
+        return kczzl;
     }
 
-    public void setSpzzl(double spzzl) {
-        this.spzzl = spzzl;
+    public void setKczzl(String kczzl) {
+        this.kczzl = kczzl;
     }
 }
