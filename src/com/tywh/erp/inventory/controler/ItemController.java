@@ -19,13 +19,15 @@ public class ItemController extends HttpServlet {
         //设置请求字符集
         request.setCharacterEncoding("utf-8");
         //获取表单参数
+        String bjbmmc = request.getParameter("bjbmmc");
         String xsbmmc = request.getParameter("xsbmmc");
         String tsfljc = request.getParameter("tsfljc");
         String startdate = request.getParameter("startdate");
         String enddate = request.getParameter("enddate");
         //封装条件对象
         Condition condition = new Condition();
-        condition.setBmmc(xsbmmc);
+        condition.setBjbmmc(bjbmmc);
+        condition.setXsbmmc(xsbmmc);
         condition.setTsfljc(tsfljc);
         condition.setStartdate(startdate);
         condition.setEnddate(enddate);

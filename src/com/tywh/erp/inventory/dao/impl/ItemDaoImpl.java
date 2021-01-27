@@ -17,43 +17,58 @@ import java.util.Map;
 public class ItemDaoImpl implements ItemDao {
     @Override
     public List<Item> queryItemList(Condition condition) {
+        /*
+        select a.shum,a.gjdj,a.tsfljc,b.xscs from FxsgkView a left join (select shum,dj,tsfljc, sum(cs) as xscs from
+	  (select fhdbh,sxh,shum,tsfljc, dj,kwbh,cs from xsmxview union select fhdbh,sxh,shum,tsfljc,dj,kwbh,cs from
+	  XsmxnView) xsmx where fhdbh in (select fhdbh from (select fhdbh,shrq,khbh,fhzt,xsbmmc from xsdview union
+      select fhdbh,shrq,khbh,fhzt,xsbmmc from xsdnview) xsd where fhzt in('待发','已发') and  shrq >= '2021-01-01'
+	  and shrq <= '2021-01-27' and xsbmmc like '%文化%'and khbh <> '2000000747') group by shum,dj,tsfljc) b
+	  on a.shum = b.shum and a.tsfljc = b.tsfljc and a.gjdj = b.dj where sxh not like '%W%' and a.tsfljc not like '%联考%'
+	  and bmmc like '%文化%' and a.tsfljc like '%文化出版-日历%' group by a.shum,a.gjdj, a.tsfljc,b.xscs order by b.xscs desc
+        */
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Item> itemList = new ArrayList<>();
         try {
             StringBuilder sql = new StringBuilder("select a.shum,a.gjdj,a.tsfljc,b.xscs from FxsgkView a left join ");
-            /*
-            select a.shum,a.gjdj,a.tsfljc,b.xscs from FxsgkView a
-left join (select shum,dj,tsfljc,sum(cs) as xscs from xsmxview where fhdbh in (select fhdbh from xsdview where fhzt in('待发','已发') and (khbh <> '2000000747') ) group by shum,dj,tsfljc) b
-on a.shum = b.shum and a.gjdj = b.dj and a.tsfljc = b.tsfljc
-where a.tsfljc not like '%联考%' and sxh not like '%W%' group by a.shum,gjdj, a.tsfljc,b.xscs order by b.xscs desc
-             */
-            sql.append("(select shum,dj,tsfljc,sum(cs) as xscs from xsmxview where fhdbh in ");
-            sql.append("(select fhdbh from xsdview where fhzt in(?, ?) and (khbh <> ?) ) group by shum,dj,tsfljc) b ");
-            sql.append("on a.shum = b.shum and a.gjdj = b.dj and a.tsfljc = b.tsfljc ");
-            sql.append("where a.tsfljc not like ? and a.sxh not like ? ");
-            if (condition.getBmmc() != "") {
-                sql.append("and bmmc like ?");
+            sql.append("(select shum,dj,tsfljc, sum(cs) as xscs from (select fhdbh,sxh,shum,tsfljc, dj,kwbh,cs from xsmxview ");
+            sql.append("union select fhdbh,sxh,shum,tsfljc,dj,kwbh,cs from XsmxnView) xsmx where fhdbh in (select fhdbh ");
+            sql.append("from (select fhdbh,convert(varchar(7),dateadd(month,0,shrq),120) shrq,khbh,fhzt,xsbmmc from xsdview ");
+            sql.append("union select fhdbh,convert(varchar(7),dateadd(month,0,shrq),120) shrq,khbh,fhzt,xsbmmc from ");
+            sql.append("xsdnview) xsd where fhzt in(?,?) and  shrq >= ? and shrq <= ? ");
+            if (condition.getXsbmmc() != "") {
+                sql.append("and xsbmmc like ? ");
             }
+            sql.append("and khbh <> ?) group by shum,dj,tsfljc) b on a.shum = b.shum and a.tsfljc = b.tsfljc ");
+            sql.append("and a.gjdj = b.dj where sxh not like ? and a.tsfljc not like ? ");
+
+            if (condition.getBjbmmc() != "") {
+                sql.append("and bmmc like ? ");
+            }
+
             if (condition.getTsfljc() != "") {
-                sql.append("and tsfljc like ?");
+                sql.append("and a.tsfljc like ? ");
             }
-            sql.append(" group by a.shum,a.gjdj, a.tsfljc,b.xscs order by b.xscs desc ");
-//            String sql = "select a.shum,a.gjdj,a.tsfljc,b.xscs from FxsgkView a left join (select shum,dj,tsfljc,sum(cs) as xscs from xsmxview where fhdbh in (select fhdbh from xsdview where fhzt in('待发','已发') and (khbh <> '2000000747') ) group by shum,dj,tsfljc) b on a.shum = b.shum and a.gjdj = b.dj and a.tsfljc = b.tsfljc where a.tsfljc not like '%联考%' and a.sxh not like '%W%'  group by a.shum,a.gjdj, a.tsfljc,b.xscs order by b.xscs desc";
+            sql.append("group by a.shum,a.gjdj, a.tsfljc,b.xscs order by b.xscs desc");
             String sqlString = sql.toString();
             conn = DbUtil.getConnection();
             ps = conn.prepareStatement(sqlString);
             ps.setString(1,"待发");
             ps.setString(2,"已发");
-            ps.setString(3,"2000000747");
-            ps.setString(4,"%联考%");
-            ps.setString(5,"%W%");
-            if (condition.getBmmc() != "") {
-                ps.setString(6, "%" + condition.getBmmc() + "%");
+            ps.setString(3,condition.getStartdate());
+            ps.setString(4,condition.getEnddate());
+            if (condition.getXsbmmc() != "") {
+                ps.setString(5, "%" + condition.getXsbmmc() + "%");
+            }
+            ps.setString(6,"2000000747");
+            ps.setString(7,"%W%");
+            ps.setString(8,"%联考%");
+            if (condition.getBjbmmc() != "") {
+                ps.setString(9,"%" + condition.getBjbmmc() + "%");
             }
             if (condition.getTsfljc() != "") {
-                ps.setString(7, "%" + condition.getTsfljc() + "%");
+                ps.setString(10, "%" + condition.getTsfljc() + "%");
             }
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -61,9 +76,11 @@ where a.tsfljc not like '%联考%' and sxh not like '%W%' group by a.shum,gjdj, a.
                 String shum = rs.getString("shum");
                 double gjdj = rs.getDouble("gjdj");
                 String tsfljc = rs.getString("tsfljc");
+                Integer xscs = rs.getInt("xscs");
                 item.setShum(shum);
                 item.setGjdj(gjdj);
                 item.setTsfljc(tsfljc);
+                item.setXscs(xscs);
                 itemList.add(item);
             }
         } catch (Exception e) {
@@ -73,113 +90,6 @@ where a.tsfljc not like '%联考%' and sxh not like '%W%' group by a.shum,gjdj, a.
         }
 
         return itemList;
-    }
-
-    @Override
-    public Map<String, Integer> queryQckc(Condition condition) {
-        String sql = "select shum,dj,tsfljc,SUM(qckc) AS qckc from kucunView where kwbh = ? group by shum,dj,tsfljc";
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Map<String, Integer> qckcMap = new HashMap<>();
-        try {
-            conn = DbUtil.getConnection();
-            ps = conn.prepareStatement(sql);
-            ps.setString(1,"00HG");
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                String shum = rs.getString("shum");
-                double dj = rs.getDouble("dj");
-                String tsfljc = rs.getString("tsfljc");
-                Integer qckc = rs.getInt("qckc");
-                String qckcItemName = shum + "-" + dj + "-" + tsfljc;
-                qckcMap.put(qckcItemName, qckc);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DbUtil.close(null, ps, rs);
-        }
-        return qckcMap;
-    }
-
-    @Override
-    public Map<String, Integer> queryQmkc(Condition condition) {
-        String sql = "select shum,dj,tsfljc,SUM(qmkc) AS qmkc from kucunView where kwbh = '00HG' group by shum,dj,tsfljc";
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Map<String, Integer> qmkcMap = new HashMap<>();
-        try {
-            conn = DbUtil.getConnection();
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                String shum = rs.getString("shum");
-                double dj = rs.getDouble("dj");
-                String tsfljc = rs.getString("tsfljc");
-                Integer qmkc = rs.getInt("qmkc");
-                String qmkcItemName = shum + "-" + dj + "-" + tsfljc;
-                qmkcMap.put(qmkcItemName, qmkc);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DbUtil.close(null, ps, rs);
-        }
-        return qmkcMap;
-    }
-
-    @Override
-    public Map<String, Integer> queryXscs(Condition condition) {
-        /*
-        select shum,tsfljc, dj,sum(cs) as xscs,xsbmmc from (select fhdbh,sxh,shum,tsfljc, dj,kwbh,cs,xsbmmc from xsmxview union select fhdbh,sxh,shum,tsfljc,dj,kwbh,cs,xsbmmc from XsmxnView) t2
-where fhdbh in (select fhdbh from (select fhdbh,shrq,khbh,fhzt from xsdview union select fhdbh,shrq,khbh,fhzt from xsdnview) t1
-where fhzt in('待发','已发') and  shrq >= '2020-02-01' and shrq <= '2020-05-31' and khbh <> '2000000747')
-and tsfljc not like '%联考%' and sxh not like '%W%' group by shum,tsfljc,dj,xsbmmc
-         */
-        StringBuilder sql = new StringBuilder();
-        sql.append("select shum,tsfljc, dj,sum(cs) as xscs from (select fhdbh,sxh,shum,tsfljc, dj,kwbh,cs from xsmxview ");
-        sql.append("union select fhdbh,sxh,shum,tsfljc,dj,kwbh,cs from XsmxnView) t2 where fhdbh in (select fhdbh from ");
-        sql.append("(select fhdbh,shrq,khbh,fhzt,xsbmmc from xsdview union select fhdbh,shrq,khbh,fhzt,xsbmmc from xsdnview) t1 where ");
-        sql.append("fhzt in(?,?) and  shrq >= ? and shrq <= ? ");
-        if (condition.getXsbmmc() != "") {
-            sql.append("and xsbmmc like ? ");
-        }
-        sql.append("and khbh <> ?) and tsfljc not like ? and sxh not like ? group by shum,tsfljc,dj");
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Map<String, Integer> xscsMap = new HashMap<>();
-        try {
-            conn = DbUtil.getConnection();
-            ps = conn.prepareStatement(sql.toString());
-            ps.setString(1,"待发");
-            ps.setString(2,"已发");
-            ps.setString(3,condition.getStartdate());
-            ps.setString(4,condition.getEnddate());
-            if (condition.getXsbmmc() != "") {
-                ps.setString(5,"%" + condition.getXsbmmc() + "%");
-            }
-            ps.setString(6,"2000000747");
-            ps.setString(7,"%联考%");
-            ps.setString(8,"%W%");
-
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                String shum = rs.getString("shum");
-                double dj = rs.getDouble("dj");
-                String tsfljc = rs.getString("tsfljc");
-                Integer xscs = rs.getInt("xscs");
-                String xscsItemName = shum + "-" + dj + "-" + tsfljc;
-                xscsMap.put(xscsItemName, xscs);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DbUtil.close(null, ps, rs);
-        }
-        return xscsMap;
     }
 
     @Override
@@ -224,13 +134,52 @@ and tsfljc not like '%联考%' and sxh not like '%W%' group by shum,tsfljc,dj,xsbm
         return zxscs;
     }
 
-    public static void main(String[] args) {
-        Condition condition = new Condition();
-        condition.setStartdate("2020-02-01");
-        condition.setEnddate("2020-05-31");
-        condition.setXsbmmc("文化");
-        ItemDaoImpl itemDao = new ItemDaoImpl();
-//        itemDao.queryXscs(condition);
-        itemDao.queryZxscs(condition);
+    @Override
+    public Map<String, Integer> queryKucun() {
+        /*
+        select shum,tsfljc,dj,kjqj,SUM(qckc) qckc,SUM(qmkc) qmkc from (
+        SELECT shum,tsfljc,dj,qckc,qmkc,kjqj,sxh,kwbh FROM kcknView union
+        select shum,tsfljc,dj,qckc,qmkc,convert(varchar(7),dateadd(month,0,getdate()),120) kjqj,sxh,kwbh from KucunView) t1
+        where KWBH = '00HG' AND kjqj >= '2020-01' and tsfljc not like '%联考%' and sxh not like '%W%'
+        group by shum,tsfljc,dj,kjqj
+         */
+        StringBuilder sql = new StringBuilder("select shum,tsfljc,dj,kjqj,SUM(qckc) qckc,SUM(qmkc) qmkc from ( ");
+        sql.append("SELECT shum,tsfljc,dj,qckc,qmkc,kjqj,sxh,kwbh FROM kcknView union ");
+        sql.append("select shum,tsfljc,dj,qckc,qmkc,convert(varchar(7),dateadd(month,0,getdate()),120) ");
+        sql.append("kjqj,sxh,kwbh from KucunView) t1 ");
+        sql.append("where KWBH = ? AND kjqj >= ? and tsfljc not like ? and sxh not like ? ");
+        sql.append("group by shum,tsfljc,dj,kjqj");
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Map<String, Integer> kucunMap = new HashMap<>();
+        try {
+            conn = DbUtil.getConnection();
+            ps = conn.prepareStatement(sql.toString());
+            ps.setString(1,"00HG");
+            ps.setString(2,"2020-01");
+            ps.setString(3,"%联考%");
+            ps.setString(4,"%W%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String shum = rs.getString("shum");
+                String tsfljc = rs.getString("tsfljc");
+                double dj = rs.getDouble("dj");
+                String kjqj = rs.getString("kjqj");
+                Integer qckc = rs.getInt("qckc");
+                Integer qmkc = rs.getInt("qmkc");
+                String qckcKey = shum + "-" + dj + "-" + tsfljc + "-" + kjqj + "-qckc";
+                String qmkcKey = shum + "-" + dj + "-" + tsfljc + "-" + kjqj + "-qmkc";
+                kucunMap.put(qckcKey,qckc);
+                kucunMap.put(qmkcKey,qmkc);
+            }
+        } catch (Exception e) {
+
+        } finally {
+            DbUtil.close(null, ps, rs);
+        }
+        return kucunMap;
     }
+
 }

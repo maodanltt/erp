@@ -14,14 +14,40 @@
 <head>
     <title>库存动销率</title>
 </head>
+<script type="text/javascript">
+
+    function search() {
+        var startdate = document.getElementById("startdate");
+        var enddate = document.getElementById("enddate");
+        var xsbmmc = document.getElementById("xsbmmc");
+
+        if (startdate = "") {
+            alert("开始月份必填！");
+            startdate.focus();
+            return;
+        }
+        if (enddate = "") {
+            alert("结束月份必填！");
+            enddate.focus();
+            return;
+        }
+        if (xsbmmc = "") {
+            alert("销售部门必填！");
+            xsbmmc.focus();
+            return;
+        }
+        document.getElementById("itemForm").submit();
+    }
+</script>
 <body>
 <br>
 <form id="itemForm" action="/itemQuery" method="post">
-    部门名称：<input type="text" name="xsbmmc" id="xsbmmc">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    编辑部门名称：<input type="text" name="bjbmmc" id="bjbmmc">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     图书分类简称：<input type="text" name="tsfljc" id="tsfljc">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    开始日期：<input type="date" name="startdate" id="startdate"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    结束日期：<input type="date" name="enddate" id="enddate">
-    <input type="submit" value="查询">
+    开始月份：<input type="month" name="startdate" id="startdate"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    结束月份：<input type="month" name="enddate" id="enddate"> &nbsp;&nbsp;&nbsp;&nbsp;
+    销售部门名称：<input type="text" name="xsbmmc" id="xsbmmc">&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="button" value="查询" onclick="search()">
 </form>
 <hr color="black">
 <table border="1" cellspacing="0" cellpadding="0" width="100%">

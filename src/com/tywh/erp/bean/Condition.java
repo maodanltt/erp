@@ -5,7 +5,7 @@ package com.tywh.erp.bean;
  */
 public class Condition {
 
-    private String bmmc;
+    private String bjbmmc;
 
     private String xsbmmc;
 
@@ -15,12 +15,12 @@ public class Condition {
 
     private String enddate;
 
-    public String getBmmc() {
-        return bmmc;
+    public String getBjbmmc() {
+        return bjbmmc;
     }
 
-    public void setBmmc(String bmmc) {
-        this.bmmc = bmmc;
+    public void setBjbmmc(String bjbmmc) {
+        this.bjbmmc = bjbmmc;
     }
 
     public String getXsbmmc() {
@@ -54,6 +54,4 @@ public class Condition {
     public void setEnddate(String enddate) {
         this.enddate = enddate;
     }
-
-
 }

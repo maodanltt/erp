@@ -11,20 +11,24 @@ import java.util.List;
 import java.util.Map;
 
 public class ItemServiceImpl implements ItemService {
+
     private ItemDao itemDao = new ItemDaoImpl();
+
     @Override
     public List<Item> queryItemList(Condition condition) {
+        String ksqj = condition.getStartdate().substring(0,7);
+        String jsqj = condition.getStartdate().substring(0,7);
+
         List<Item> itemList = itemDao.queryItemList(condition);
-        Map<String, Integer> qckcMap = itemDao.queryQckc(condition);
-        Map<String, Integer> qmkcMap = itemDao.queryQmkc(condition);
-        Map<String, Integer> xscsMap = itemDao.queryXscs(condition);
+        Map<String, Integer> kucunMap = itemDao.queryKucun();
         for (Item item : itemList) {
-            Integer qckc = qckcMap.get(item.getKey()) == null ? 0 : qckcMap.get(item.getKey());
-            Integer qmkc = qmkcMap.get(item.getKey()) == null ? 0 : qmkcMap.get(item.getKey());
-            Integer xscs = xscsMap.get(item.getKey()) == null ? 0 : xscsMap.get(item.getKey());
+            String qckcKey = item.getKey() + "-" + ksqj + "-qckc";
+            String qmkcKey = item.getKey() + "-" + jsqj + "-qmkc";
+            Integer qckc = kucunMap.get(qckcKey) == null ? 0 : kucunMap.get(qckcKey);
+            Integer qmkc = kucunMap.get(qmkcKey) == null ? 0 : kucunMap.get(qmkcKey);
+            Integer xscs = item.getXscs();
             item.setQckc(qckc);
             item.setQmkc(qmkc);
-            item.setXscs(xscs);
             if (xscs <= 0) {
                 item.setKczzl("0");
             } else if (xscs > 0 && ((qckc + qmkc) == 0)){
