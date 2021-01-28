@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class ItemController extends HttpServlet {
     private ItemService itemService = new ItemServiceImpl();
@@ -31,10 +32,14 @@ public class ItemController extends HttpServlet {
         condition.setTsfljc(tsfljc);
         condition.setStartdate(startdate);
         condition.setEnddate(enddate);
+        request.setAttribute("condition",condition);
         //调用service查询
-        List<Item> itemList = itemService.queryItemList(condition);
+        Map<String,Object> retMap = itemService.queryItem(condition);
+        List<Item> itemList = (List<Item>) retMap.get("itemList");
+        Integer zxscs = (Integer) retMap.get("zxscs");
         //转向页面
         request.setAttribute("itemList", itemList);
+        request.setAttribute("zxscs", zxscs);
         request.getRequestDispatcher("/item.jsp").forward(request, response);
     }
 }

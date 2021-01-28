@@ -4,8 +4,9 @@ import com.tywh.erp.bean.Condition;
 import com.tywh.erp.bean.Item;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ItemService {
 
-    List<Item> queryItemList(Condition condition);
+    Map<String,Object> queryItem(Condition condition);
 }
