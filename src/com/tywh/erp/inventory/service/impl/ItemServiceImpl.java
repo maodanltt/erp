@@ -18,7 +18,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Map<String,Object> queryItem(Condition condition) {
         String ksqj = condition.getStartdate().substring(0,7);
-        String jsqj = condition.getStartdate().substring(0,7);
+        String jsqj = condition.getEnddate().substring(0,7);
         Map<String, Object> retMap = new HashMap<>();
         List<Item> itemList = null;
         Integer zxscs = null;
@@ -40,14 +40,14 @@ public class ItemServiceImpl implements ItemService {
                 } else if (xscs > 0 && ((qckc + qmkc) == 0)){
                     double d = xscs.doubleValue() / zxscs.doubleValue() ;
                     NumberFormat nf = NumberFormat.getPercentInstance();
-                    nf.setMinimumFractionDigits(6);
+                    nf.setMinimumFractionDigits(2);
                     item.setKczzl("100%");
                     item.setKcdxl(nf.format(d));
                 } else if (xscs > 0 && ((qckc + qmkc) > 0)) {
                     double d1 = (xscs.doubleValue() / (qckc.doubleValue() + qmkc.doubleValue() + xscs.doubleValue()));
                     double d2 = xscs.doubleValue() / zxscs.doubleValue() ;
                     NumberFormat nf = NumberFormat.getPercentInstance();
-                    nf.setMinimumFractionDigits(6);
+                    nf.setMinimumFractionDigits(2);
                     item.setKczzl(nf.format(d1));
                     item.setKcdxl(nf.format(d2));
                 } else {

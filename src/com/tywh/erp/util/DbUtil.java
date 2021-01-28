@@ -23,9 +23,9 @@ public class DbUtil {
         Connection conn = connMap.get("conn");
         if (conn == null) {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://114.215.124.181:1433;databasename=perpfx01";
+            String url = "jdbc:sqlserver://*:1433;databasename=perpfx01";
             String user = "sa";
-            String password = "tywh@2019";
+            String password = "*";
             conn = DriverManager.getConnection(url, user, password);
             connMap.put("conn", conn);
         }
