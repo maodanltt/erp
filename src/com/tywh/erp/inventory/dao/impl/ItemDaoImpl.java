@@ -49,11 +49,11 @@ public class ItemDaoImpl implements ItemDao {
             sql.append("and khbh <> ?) group by shum,dj,tsfljc) b on a.shum = b.shum and a.tsfljc = b.tsfljc ");
             sql.append("and a.gjdj = b.dj where sxh not like ? and a.tsfljc not like ? and a.tsfljc not like ? and a.tsfljc not like ? and a.tsfljc not like ? ");
             paramList.add("2000000747");
-            paramList.add("%W%");
+            paramList.add("W%");
             paramList.add("%联考%");
-            paramList.add("%日历%");
-            paramList.add("%宣传品%");
-            paramList.add("%赠品%");
+            paramList.add("日历%");
+            paramList.add("宣传品%");
+            paramList.add("赠品%");
             if (condition.getBjbmmc() != "") {
                 sql.append("and bmmc like ? ");
                 paramList.add("%" + condition.getBjbmmc() + "%");
@@ -116,11 +116,11 @@ public class ItemDaoImpl implements ItemDao {
         }
         sql.append("and khbh <> ?) and tsfljc not like ? and tsfljc not like ? and tsfljc not like ? and tsfljc not like ? and sxh not like ? ");
         paramList.add("2000000747");
-        paramList.add("%W%");
+        paramList.add("W%");
         paramList.add("%联考%");
-        paramList.add("%日历%");
-        paramList.add("%宣传品%");
-        paramList.add("%赠品%");
+        paramList.add("日历%");
+        paramList.add("宣传品%");
+        paramList.add("赠品%");
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -168,10 +168,10 @@ public class ItemDaoImpl implements ItemDao {
             ps.setString(1,"00HG");
             ps.setString(2,"2020-01");
             ps.setString(3,"%联考%");
-            ps.setString(4,"%日历%");
-            ps.setString(5,"%宣传品%");
-            ps.setString(6,"%赠品%");
-            ps.setString(7,"%W%");
+            ps.setString(4,"日历%");
+            ps.setString(5,"宣传品%");
+            ps.setString(6,"赠品%");
+            ps.setString(7,"W%");
             rs = ps.executeQuery();
             while (rs.next()) {
                 String shum = rs.getString("shum");
