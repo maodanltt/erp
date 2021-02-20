@@ -1,8 +1,5 @@
 package com.tywh.erp.bean;
 
-/**
- * 封装查询条件
- */
 public class Condition {
 
     private String bjbmmc;

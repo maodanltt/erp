@@ -11,6 +11,10 @@
 <%
     List<Item> itemList = (List<Item>) request.getAttribute("itemList");
     Integer zxscs = (Integer) request.getAttribute("zxscs");
+    Integer zqckc = (Integer) request.getAttribute("zqckc");
+    Integer zqmkc = (Integer) request.getAttribute("zqmkc");
+    String zkczzl = (String) request.getAttribute("zkczzl");
+
     String bjbmmc = request.getParameter("bjbmmc");
     String xsbmmc = request.getParameter("xsbmmc");
     String tsfljc = request.getParameter("tsfljc");
@@ -57,6 +61,13 @@
             }
         %>
 
+        <%
+            if (zkczzl != null) {
+         %>
+        document.getElementById("zkczzlspan").innerHTML = "<%=zkczzl%>";
+        <%
+            }
+        %>
     }
 </script>
 <body onload="init()">
@@ -70,9 +81,10 @@
     <input type="button" value="查询" onclick="search()">
 </form>
 <hr color="black">
-
-    总销售册数：<span id="zxscsspan"></span>
-    <br><br>
+    <div>
+        总销售册数：<span id="zxscsspan"></span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 总库存周转率：<span id="zkczzlspan"></span>
+        <br><br>
+    </div>
 <table border="1" cellspacing="0" cellpadding="0" width="98%">
     <tr align="center">
         <td width="3%">序号</td>
@@ -105,6 +117,23 @@
             }
         }
     %>
+    <%
+        if (zqckc != null ) {
+
+    %>
+    <tr align="center">
+        <td width="3%" colspan="4">汇总</td>
+        <td width="7%"><%=zqckc%></td>
+        <td width="7%"><%=zqmkc%></td>
+        <td width="7%"><%=zxscs%></td>
+        <td width="8%">--</td>
+        <td width="8%">--</td>
+    </tr>
+
+     <%
+        }
+     %>
+
 
 </table>
 </body>

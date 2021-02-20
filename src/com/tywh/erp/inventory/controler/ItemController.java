@@ -17,15 +17,15 @@ public class ItemController extends HttpServlet {
     private ItemService itemService = new ItemServiceImpl();
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //设置请求字符集
+
         request.setCharacterEncoding("utf-8");
-        //获取表单参数
+
         String bjbmmc = request.getParameter("bjbmmc");
         String xsbmmc = request.getParameter("xsbmmc");
         String tsfljc = request.getParameter("tsfljc");
         String startdate = request.getParameter("startdate");
         String enddate = request.getParameter("enddate");
-        //封装条件对象
+
         Condition condition = new Condition();
         condition.setBjbmmc(bjbmmc);
         condition.setXsbmmc(xsbmmc);
@@ -33,13 +33,19 @@ public class ItemController extends HttpServlet {
         condition.setStartdate(startdate);
         condition.setEnddate(enddate);
         request.setAttribute("condition",condition);
-        //调用service查询
+
         Map<String,Object> retMap = itemService.queryItem(condition);
         List<Item> itemList = (List<Item>) retMap.get("itemList");
         Integer zxscs = (Integer) retMap.get("zxscs");
-        //转向页面
+        String zkczzl = (String) retMap.get("zkczzl");
+        Integer zqckc = (Integer) retMap.get("zqckc");
+        Integer zqmkc = (Integer) retMap.get("zqmkc");
+
         request.setAttribute("itemList", itemList);
         request.setAttribute("zxscs", zxscs);
+        request.setAttribute("zkczzl", zkczzl);
+        request.setAttribute("zqckc", zqckc);
+        request.setAttribute("zqmkc", zqmkc);
         request.getRequestDispatcher("/item.jsp").forward(request, response);
     }
 }

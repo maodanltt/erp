@@ -17,15 +17,7 @@ import java.util.Map;
 public class ItemDaoImpl implements ItemDao {
     @Override
     public List<Item> queryItemList(Condition condition) throws Exception{
-        /*
-        select a.shum,a.gjdj,a.tsfljc,b.xscs from FxsgkView a left join (select shum,dj,tsfljc, sum(cs) as xscs from
-	  (select fhdbh,sxh,shum,tsfljc, dj,kwbh,cs from xsmxview union select fhdbh,sxh,shum,tsfljc,dj,kwbh,cs from
-	  XsmxnView) xsmx where fhdbh in (select fhdbh from (select fhdbh,shrq,khbh,fhzt,xsbmmc from xsdview union
-      select fhdbh,shrq,khbh,fhzt,xsbmmc from xsdnview) xsd where fhzt in('´ı·¢','ÒÑ·¢') and  shrq >= '2021-01-01'
-	  and shrq <= '2021-01-27' and xsbmmc like '%ÎÄ»¯%'and khbh <> '2000000747') group by shum,dj,tsfljc) b
-	  on a.shum = b.shum and a.tsfljc = b.tsfljc and a.gjdj = b.dj where sxh not like '%W%' and a.tsfljc not like '%Áª¿¼%'
-	  and bmmc like '%ÎÄ»¯%' and a.tsfljc like '%ÎÄ»¯³ö°æ-ÈÕÀú%' group by a.shum,a.gjdj, a.tsfljc,b.xscs order by b.xscs desc
-        */
+
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -38,8 +30,8 @@ public class ItemDaoImpl implements ItemDao {
             sql.append("from (select fhdbh,convert(varchar(7),dateadd(month,0,shrq),120) shrq,khbh,fhzt,xsbmmc from xsdview ");
             sql.append("union select fhdbh,convert(varchar(7),dateadd(month,0,shrq),120) shrq,khbh,fhzt,xsbmmc from ");
             sql.append("xsdnview) xsd where fhzt in(?,?) and  shrq >= ? and shrq <= ? ");
-            paramList.add("´ı·¢");
-            paramList.add("ÒÑ·¢");
+            paramList.add("å¾…å‘");
+            paramList.add("å·²å‘");
             paramList.add(condition.getStartdate());
             paramList.add(condition.getEnddate());
             if (condition.getXsbmmc() != "") {
@@ -50,10 +42,10 @@ public class ItemDaoImpl implements ItemDao {
             sql.append("and a.gjdj = b.dj where sxh not like ? and a.tsfljc not like ? and a.tsfljc not like ? and a.tsfljc not like ? and a.tsfljc not like ? ");
             paramList.add("2000000747");
             paramList.add("W%");
-            paramList.add("%Áª¿¼%");
-            paramList.add("ÈÕÀú%");
-            paramList.add("Ğû´«Æ·%");
-            paramList.add("ÔùÆ·%");
+            paramList.add("%è”è€ƒ%");
+            paramList.add("æ—¥å†%");
+            paramList.add("å®£ä¼ å“%");
+            paramList.add("èµ å“%");
             if (condition.getBjbmmc() != "") {
                 sql.append("and bmmc like ? ");
                 paramList.add("%" + condition.getBjbmmc() + "%");
@@ -92,13 +84,7 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public Integer queryZxscs(Condition condition) throws Exception{
-        /*
-        select sum(cs) as zxscs from (select fhdbh,sxh,shum,tsfljc, dj,kwbh,cs from xsmxview
-        union select fhdbh,sxh,shum,tsfljc,dj,kwbh,cs from XsmxnView) xsmx where fhdbh in (select fhdbh from
-        (select fhdbh,convert(varchar(7),dateadd(month,0,shrq),120) shrq,khbh,fhzt,xsbmmc from xsdview union
-        select fhdbh,convert(varchar(7),dateadd(month,0,shrq),120) shrq,khbh,fhzt,xsbmmc from xsdnview) xsd
-        where fhzt in('´ı·¢','ÒÑ·¢') and  shrq >= '2021-01-01' and shrq <= '2021-01-27' and xsbmmc like '%ÎÄ»¯%'and khbh <> '2000000747')
-         */
+
         List<String> paramList = new ArrayList<>();
 
         StringBuilder sql = new StringBuilder("select sum(cs) as zxscs from (select fhdbh,sxh,shum,tsfljc, dj,kwbh,cs from xsmxview ");
@@ -106,8 +92,8 @@ public class ItemDaoImpl implements ItemDao {
         sql.append("(select fhdbh,convert(varchar(7),dateadd(month,0,shrq),120) shrq,khbh,fhzt,xsbmmc from xsdview union ");
         sql.append("select fhdbh,convert(varchar(7),dateadd(month,0,shrq),120) shrq,khbh,fhzt,xsbmmc from xsdnview) t1 where ");
         sql.append("fhzt in(?,?) and  shrq >= ? and shrq <= ? ");
-        paramList.add("´ı·¢");
-        paramList.add("ÒÑ·¢");
+        paramList.add("å¾…å‘");
+        paramList.add("å·²å‘");
         paramList.add(condition.getStartdate());
         paramList.add(condition.getEnddate());
         if (condition.getXsbmmc() != "") {
@@ -117,10 +103,10 @@ public class ItemDaoImpl implements ItemDao {
         sql.append("and khbh <> ?) and tsfljc not like ? and tsfljc not like ? and tsfljc not like ? and tsfljc not like ? and sxh not like ? ");
         paramList.add("2000000747");
         paramList.add("W%");
-        paramList.add("%Áª¿¼%");
-        paramList.add("ÈÕÀú%");
-        paramList.add("Ğû´«Æ·%");
-        paramList.add("ÔùÆ·%");
+        paramList.add("%è”è€ƒ%");
+        paramList.add("æ—¥å†%");
+        paramList.add("å®£ä¼ å“%");
+        paramList.add("èµ å“%");
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -144,13 +130,7 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public Map<String, Integer> queryKucun() throws Exception{
-        /*
-        select shum,tsfljc,dj,kjqj,SUM(qckc) qckc,SUM(qmkc) qmkc from (
-        SELECT shum,tsfljc,dj,qckc,qmkc,kjqj,sxh,kwbh FROM kcknView union
-        select shum,tsfljc,dj,qckc,qmkc,convert(varchar(7),dateadd(month,0,getdate()),120) kjqj,sxh,kwbh from KucunView) t1
-        where KWBH = '00HG' AND kjqj >= '2020-01' and tsfljc not like '%Áª¿¼%' and sxh not like '%W%'
-        group by shum,tsfljc,dj,kjqj
-         */
+
         StringBuilder sql = new StringBuilder("select shum,tsfljc,dj,kjqj,SUM(qckc) qckc,SUM(qmkc) qmkc from ( ");
         sql.append("SELECT shum,tsfljc,dj,qckc,qmkc,kjqj,sxh,kwbh FROM kcknView union ");
         sql.append("select shum,tsfljc,dj,qckc,qmkc,convert(varchar(7),dateadd(month,0,getdate()),120) ");
@@ -167,10 +147,10 @@ public class ItemDaoImpl implements ItemDao {
             ps = conn.prepareStatement(sql.toString());
             ps.setString(1,"00HG");
             ps.setString(2,"2020-01");
-            ps.setString(3,"%Áª¿¼%");
-            ps.setString(4,"ÈÕÀú%");
-            ps.setString(5,"Ğû´«Æ·%");
-            ps.setString(6,"ÔùÆ·%");
+            ps.setString(3,"%è”è€ƒ%");
+            ps.setString(4,"æ—¥å†%");
+            ps.setString(5,"å®£ä¼ å“%");
+            ps.setString(6,"èµ å“%");
             ps.setString(7,"W%");
             rs = ps.executeQuery();
             while (rs.next()) {

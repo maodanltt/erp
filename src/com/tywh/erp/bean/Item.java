@@ -1,29 +1,24 @@
 package com.tywh.erp.bean;
 
 public class Item {
-    /*
-    shum, tsfljc, gjdj, bmmc, xscs, zxscs, qckc, qmkc, xscs / ((qckc + qmkc) / 2)) AS spzzl,
-                xscs / zxscs) AS dpdxl
-     */
 
-    //书名
     private String shum;
-    //图书分类简称
+
     private String tsfljc;
-    //图书定价
+
     private double gjdj;
-    //期初库存
+
     private Integer qckc;
-    //期末库存
+
     private Integer qmkc;
-    //单品销售册数
+
     private Integer xscs;
-    //商品周转率
+
     private String kczzl;
-    //动销率
+
     private String kcdxl;
 
-    //书名、定价、图书分类简称组合，作为主键
+
     private String key;
     public String getKey() {
         return this.shum + "-" + this.gjdj + "-" + this.tsfljc;
